@@ -19,7 +19,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON )
 
 add_subdirectory( 3rdParty )
-add_subdirectory( photo_album )
+add_subdirectory( lib/json )
+add_subdirectory( exec/photo_album )
 
 if( BUILD_TESTS )
     if( BUILD_COVERAGE_REPORT )
