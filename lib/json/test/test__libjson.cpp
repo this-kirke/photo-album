@@ -22,13 +22,8 @@ TEST_CASE( "json__value__equals", "[json]" ){
     JSON__Value value1;
     JSON__Value value2;
 
-    value1 = (JSON__Value) {
-        .type = JSON__ValueType__Null,
-    };
-    
-    value2 = (JSON__Value) {
-        .type = JSON__ValueType__Invalid,
-    };
+    value1.type = JSON__ValueType__Null;
+    value2.type = JSON__ValueType__Invalid;
 
     REQUIRE( json__value__equals( NULL, NULL ) );
     REQUIRE_FALSE( json__value__equals( NULL, &value1 ) );
@@ -37,15 +32,11 @@ TEST_CASE( "json__value__equals", "[json]" ){
     REQUIRE( json__value__equals( &value1, &value1 ) );
     REQUIRE_FALSE( json__value__equals( &value1, &value2 ) );
 
-    value1 = (JSON__Value) {
-        .type = JSON__ValueType__String,
-        .string = string__literal( "A String!" )
-    };
+    value1.type = JSON__ValueType__String;
+    value1.string = string__literal( "A String!" );
     
-    value2 = (JSON__Value) {
-        .type = JSON__ValueType__Integer,
-        .integer = 42
-    };
+    value2.type = JSON__ValueType__Integer;
+    value2.integer = 42;
 
     REQUIRE( json__value__equals( &value1, &value1 ) );
     REQUIRE( json__value__equals( &value2, &value2 ) );
