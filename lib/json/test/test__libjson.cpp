@@ -8,6 +8,7 @@
 #include "kirke/json.h"
 
 extern "C" void skip_whitespace( String *string );
+
 TEST_CASE( "skip_whitespace", "[json]" ){
     String leading_whitespace = string__literal( "\t\n\r word" );
     String expected_string = string__literal( "word" );
@@ -16,7 +17,6 @@ TEST_CASE( "skip_whitespace", "[json]" ){
 
     REQUIRE( string__equals( &leading_whitespace, &expected_string ) );
 }
-
 
 TEST_CASE( "json__value__equals", "[json]" ){
     JSON__Value value1;
@@ -43,10 +43,31 @@ TEST_CASE( "json__value__equals", "[json]" ){
     REQUIRE_FALSE( json__value__equals( &value1, &value2 ) );
 }
 
-TEST_CASE( "json__parse", "[json]" ){
-    SystemAllocator system_allocator;
-    system_allocator__initialize( &system_allocator, NULL );
+class JSON__TestFixture {
+    protected:
+        JSON__TestFixture(){
+            system_allocator__initialize( &system_allocator, NULL );
+        }
 
+        ~JSON__TestFixture(){
+            system_allocator__deinitialize( &system_allocator );
+        }
+
+        SystemAllocator system_allocator;
+};
+
+TEST_CASE_METHOD( JSON__TestFixture, "json__parse__null", "[json]" ){
+    String raw_json = string__literal( "\t\r\n null" );
+
+    JSON__Value *value = json__parse( &raw_json, system_allocator.allocator );
+
+    REQUIRE( value->type == JSON__ValueType__Null );
+
+    json__value__clear( value, system_allocator.allocator );
+    allocator__free( system_allocator.allocator, value );
+}
+
+TEST_CASE_METHOD( JSON__TestFixture, "json__parse", "[json]" ){
     String raw_json = string__literal( 
         "{"
         "   \"null\"            :   null,"
@@ -62,9 +83,8 @@ TEST_CASE( "json__parse", "[json]" ){
         "}" 
     );
 
-    JSON__Object *json = json__parse( &raw_json, system_allocator.allocator );
+    JSON__Value *json = json__parse( &raw_json, system_allocator.allocator );
 
-    json__object__clear( json, system_allocator.allocator );
+    json__value__clear( json, system_allocator.allocator );
     allocator__free( system_allocator.allocator, json );
-    system_allocator__deinitialize( &system_allocator );
 }

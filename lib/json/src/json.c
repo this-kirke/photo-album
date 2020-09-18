@@ -7,11 +7,40 @@
 ARRAY__DEFINE( Array__JSON__Value, array__json__value, JSON__Value, json__value__equals )
 ARRAY__DEFINE( Array__JSON__Object, array__json__object, JSON__Object, json__object__equals )
 
+const String null_string = string__literal( "null" );
+
 void skip_whitespace( String *string ){
     while( string->data[ 0 ] == '\t' || *string->data == '\n' || *string->data == '\r' || *string->data == ' '){
         string->data++;
         string->length--;
         string->capacity--;
+    }
+}
+
+JSON__Value *parse_value( String *json, Allocator *allocator ){
+    switch( json->data[ 0 ] ){
+		case 'n':
+            {
+                String null_check = {
+                    .data = json->data,
+                    .length = null_string.length,
+                    .capacity = null_string.length,
+                    .element_size = null_string.element_size
+                };
+                
+                if( string__equals( &null_check, &null_string ) ){
+                    JSON__Value *return_value = allocator__alloc( allocator, sizeof( JSON__Value ) );
+                    return_value->type = JSON__ValueType__Null;
+                
+                    json->data += null_string.length;
+
+                    return return_value;
+                }
+
+                return NULL;
+            }
+        default:
+            return NULL;
     }
 }
 
@@ -96,18 +125,9 @@ bool json__object__equals( JSON__Object const *first, JSON__Object const *second
     return true;
 }
 
-JSON__Object* json__parse( String const *json, Allocator *allocator ){
-    String *json_clone = string__clone( json, allocator );
-    skip_whitespace( json_clone );
+JSON__Value* json__parse( String const *json, Allocator *allocator ){
+    String working_json = *json;
+    skip_whitespace( &working_json );
 
-    JSON__Object* return_value = allocator__alloc( allocator, sizeof( JSON__Object ) );
-
-    return_value->parent = NULL;
-    string__initialize( &return_value->key, allocator, 0 );
-    return_value->value.type = JSON__ValueType__Invalid;
-
-    string__clear( json_clone, allocator );
-    allocator__free( allocator, json_clone );
-
-    return return_value;
+    return parse_value( &working_json, allocator );
 }

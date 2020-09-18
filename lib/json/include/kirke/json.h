@@ -50,7 +50,7 @@ bool json__value__equals( JSON__Value const *first, JSON__Value const *second );
 void json__object__clear( JSON__Object *object, Allocator *allocator );
 bool json__object__equals( JSON__Object const *first, JSON__Object const *second );
 
-JSON__Object* json__parse( String const *json, Allocator *allocator );
+JSON__Value* json__parse( String const *json, Allocator *allocator );
 
 END_DECLARATIONS
 
