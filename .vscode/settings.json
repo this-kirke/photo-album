@@ -21,6 +21,7 @@
         "vector": "c",
         "string_view": "c",
         "chrono": "cpp",
-        "memory_resource": "cpp"
+        "memory_resource": "cpp",
+        "ranges": "c"
     }
 }
