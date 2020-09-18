@@ -2,9 +2,21 @@
 #include "catch2/catch.hpp"
 
 // Internal Includes
-#include "kirke/json.h"
 #include "kirke/string.h"
 #include "kirke/system_allocator.h"
+
+#include "kirke/json.h"
+
+extern "C" void skip_whitespace( String *string );
+TEST_CASE( "skip_whitespace", "[json]" ){
+    String leading_whitespace = string__literal( "\t\n\r word" );
+    String expected_string = string__literal( "word" );
+
+    skip_whitespace( &leading_whitespace );
+
+    REQUIRE( string__equals( &leading_whitespace, &expected_string ) );
+}
+
 
 TEST_CASE( "json__value__equals", "[json]" ){
     JSON__Value value1;

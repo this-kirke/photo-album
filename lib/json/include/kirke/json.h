@@ -40,6 +40,8 @@ struct JSON__Value{
 
 struct JSON__Object{
     JSON__Object *parent;
+	JSON__Object *previous, *next;
+    
     String key;
     JSON__Value value;
 };

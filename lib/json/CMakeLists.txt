@@ -1,5 +1,11 @@
 set( libjson__DIR "${CMAKE_CURRENT_LIST_DIR}" )
 
+set_source_files_properties( 
+    DIRECTORY ${libjson__DIR}
+    PROPERTIES 
+    LANGUAGE C
+)
+
 add_library(
     libjson
     ${libjson__DIR}/src/json.c
@@ -47,6 +53,13 @@ if( BUILD_TESTS )
         )
     endif( BUILD_COVERAGE_REPORT )
     
+    # Include the src directory so we can test static methods
+    target_include_directories(
+        libjson
+        PUBLIC
+        ${libjson__DIR}/src
+    )
+
     # "catch2__" methods defined in project/3rdParty/Catch2/CMakeLists.txt
     catch2__add_test(
         NAME test__libjson

@@ -7,6 +7,14 @@
 ARRAY__DEFINE( Array__JSON__Value, array__json__value, JSON__Value, json__value__equals )
 ARRAY__DEFINE( Array__JSON__Object, array__json__object, JSON__Object, json__object__equals )
 
+void skip_whitespace( String *string ){
+    while( string->data[ 0 ] == '\t' || *string->data == '\n' || *string->data == '\r' || *string->data == ' '){
+        string->data++;
+        string->length--;
+        string->capacity--;
+    }
+}
+
 void json__value__clear( JSON__Value *value, Allocator *allocator ){
     if( value == NULL ){
         return;
@@ -89,8 +97,14 @@ bool json__object__equals( JSON__Object const *first, JSON__Object const *second
 }
 
 JSON__Object* json__parse( String const *json, Allocator *allocator ){
-    (void)( json );
+    String *json_clone = string__clone( json, allocator );
+    skip_whitespace( json_clone );
 
     JSON__Object* return_value = allocator__alloc( allocator, sizeof( JSON__Object ) );
+
+
+    string__clear( json_clone, allocator );
+    allocator__free( allocator, json_clone );
+
     return return_value;
 }
