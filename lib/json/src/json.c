@@ -102,6 +102,9 @@ JSON__Object* json__parse( String const *json, Allocator *allocator ){
 
     JSON__Object* return_value = allocator__alloc( allocator, sizeof( JSON__Object ) );
 
+    return_value->parent = NULL;
+    string__initialize( &return_value->key, allocator, 0 );
+    return_value->value.type = JSON__ValueType__Invalid;
 
     string__clear( json_clone, allocator );
     allocator__free( allocator, json_clone );
