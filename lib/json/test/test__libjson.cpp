@@ -9,7 +9,7 @@
 
 extern "C" void skip_whitespace( String *string );
 
-TEST_CASE( "skip_whitespace", "[json]" ){
+TEST_CASE( "test__json__skip_whitespace", "[json]" ){
     String leading_whitespace = string__literal( "\t\n\r word" );
     String expected_string = string__literal( "word" );
 
@@ -18,7 +18,7 @@ TEST_CASE( "skip_whitespace", "[json]" ){
     REQUIRE( string__equals( &leading_whitespace, &expected_string ) );
 }
 
-TEST_CASE( "json__value__equals", "[json]" ){
+TEST_CASE( "test__json__value__equals", "[json]" ){
     JSON__Value value1;
     JSON__Value value2;
 
@@ -56,7 +56,7 @@ class JSON__TestFixture {
         SystemAllocator system_allocator;
 };
 
-TEST_CASE_METHOD( JSON__TestFixture, "json__parse__null", "[json]" ){
+TEST_CASE_METHOD( JSON__TestFixture, "test__json__parse__null", "[json]" ){
     String raw_json = string__literal( "null" );
 
     JSON__Value *value = json__parse( &raw_json, system_allocator.allocator );
@@ -67,7 +67,7 @@ TEST_CASE_METHOD( JSON__TestFixture, "json__parse__null", "[json]" ){
     allocator__free( system_allocator.allocator, value );
 }
 
-TEST_CASE_METHOD( JSON__TestFixture, "json__parse__boolean", "[json]" ){
+TEST_CASE_METHOD( JSON__TestFixture, "test__json__parse__boolean", "[json]" ){
     String true_json = string__literal( "true" );
     JSON__Value true_value = {
         .type = JSON__ValueType__Boolean,
@@ -90,7 +90,7 @@ TEST_CASE_METHOD( JSON__TestFixture, "json__parse__boolean", "[json]" ){
     json__value__clear( false_parsed, system_allocator.allocator );
     allocator__free( system_allocator.allocator, false_parsed );
 }
-TEST_CASE_METHOD( JSON__TestFixture, "json__parse", "[json]" ){
+TEST_CASE_METHOD( JSON__TestFixture, "test__json__parse", "[json]" ){
     String raw_json = string__literal( 
         "{"
         "   \"null\"            :   null,"

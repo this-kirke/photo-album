@@ -7,8 +7,6 @@
 ARRAY__DEFINE( Array__JSON__Value, array__json__value, JSON__Value, json__value__equals )
 ARRAY__DEFINE( Array__JSON__Object, array__json__object, JSON__Object, json__object__equals )
 
-const String null_string = string__literal( "null" );
-
 void skip_whitespace( String *string ){
     while( string->data[ 0 ] == '\t' || *string->data == '\n' || *string->data == '\r' || *string->data == ' '){
         string->data++;
@@ -21,10 +19,11 @@ JSON__Value *parse_value( String *json, Allocator *allocator ){
     switch( json->data[ 0 ] ){
 		case 'n':
             {
+                const String null_string = string__literal( "null" );
+
                 String null_check = {
                     .data = json->data,
                     .length = null_string.length,
-                    .capacity = null_string.length,
                     .element_size = null_string.element_size
                 };
                 
@@ -37,6 +36,50 @@ JSON__Value *parse_value( String *json, Allocator *allocator ){
                     return return_value;
                 }
 
+                return NULL;
+            }
+        case 'f':
+            {
+                const String false_string = string__literal( "false" );
+
+                String false_check = {
+                    .data = json->data,
+                    .length = false_string.length,
+                    .element_size = false_string.element_size
+                };
+
+                if( string__equals( &false_check, &false_string ) ){
+                    JSON__Value *return_value = allocator__alloc( allocator, sizeof( JSON__Value ) );
+                    return_value->type = JSON__ValueType__Boolean;
+                    return_value->boolean = false;
+
+                    json->data += false_string.length;
+
+                    return return_value;
+                }
+                
+                return NULL;
+            }
+        case 't':
+            {
+                const String true_string = string__literal( "true" );
+
+                String true_check = {
+                    .data = json->data,
+                    .length = true_string.length,
+                    .element_size = true_string.element_size
+                };
+
+                if( string__equals( &true_check, &true_string ) ){
+                    JSON__Value *return_value = allocator__alloc( allocator, sizeof( JSON__Value ) );
+                    return_value->type = JSON__ValueType__Boolean;
+                    return_value->boolean = true;
+
+                    json->data += true_string.length;
+
+                    return return_value;
+                }
+                
                 return NULL;
             }
         default:
