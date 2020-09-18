@@ -57,7 +57,7 @@ class JSON__TestFixture {
 };
 
 TEST_CASE_METHOD( JSON__TestFixture, "json__parse__null", "[json]" ){
-    String raw_json = string__literal( "\t\r\n null" );
+    String raw_json = string__literal( "null" );
 
     JSON__Value *value = json__parse( &raw_json, system_allocator.allocator );
 
@@ -67,6 +67,29 @@ TEST_CASE_METHOD( JSON__TestFixture, "json__parse__null", "[json]" ){
     allocator__free( system_allocator.allocator, value );
 }
 
+TEST_CASE_METHOD( JSON__TestFixture, "json__parse__boolean", "[json]" ){
+    String true_json = string__literal( "true" );
+    JSON__Value true_value = {
+        .type = JSON__ValueType__Boolean,
+        .boolean = true
+    };
+    JSON__Value *true_parsed = json__parse( &true_json, system_allocator.allocator );
+    
+    REQUIRE( json__value__equals( true_parsed, &true_value ) );
+    json__value__clear( true_parsed, system_allocator.allocator );
+    allocator__free( system_allocator.allocator, true_parsed );
+
+    String false_json = string__literal( "false" );
+    JSON__Value false_value = {
+        .type = JSON__ValueType__Boolean,
+        .boolean = false
+    };
+    JSON__Value *false_parsed = json__parse( &false_json, system_allocator.allocator );
+
+    REQUIRE( json__value__equals( false_parsed, &false_value ) );
+    json__value__clear( false_parsed, system_allocator.allocator );
+    allocator__free( system_allocator.allocator, false_parsed );
+}
 TEST_CASE_METHOD( JSON__TestFixture, "json__parse", "[json]" ){
     String raw_json = string__literal( 
         "{"
